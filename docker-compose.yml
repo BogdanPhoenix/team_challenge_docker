@@ -1,0 +1,43 @@
+services:
+  database:
+    image: mariadb:lts-ubi9
+    container_name: database_service
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    networks:
+      - app-network
+
+  backend:
+    image: eclipse-temurin:21-jdk
+    container_name: backend_service
+    environment:
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SERVER_PORT: ${SERVER_PORT}
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    volumes:
+      - ./backend:/app
+    command: >
+      bash -c "
+        apt-get update &&
+        apt-get install -y git maven &&
+        git clone --branch ${BRANCH} ${BACKEND_REPO} /tmp/repo &&
+        mvn -f /tmp/repo/pom.xml clean package -DskipTests -X &&
+        mv /tmp/repo/target/*.jar /app/app.jar &&
+        rm -r /tmp/repo
+        java -jar /app/app.jar"
+    depends_on:
+      - database
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
