@@ -85,7 +85,7 @@ def copy_file_with_prompt(destination_path):
             print("Please try again.")
 
 def data_from_github(env_path):
-    new_env_values_path = '../.env.example'
+    new_env_values_path = '.env.example'
     
     ensure_env_file(env_path)
 
@@ -95,7 +95,7 @@ def data_from_github(env_path):
     return swap_env_values(old_values, new_values)
 
 if __name__ == '__main__':
-    env_path = '../.env'
+    env_path = '.env'
     
     while True:
         print("\nPlease choose how to set up your .env file:")

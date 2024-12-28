@@ -13,6 +13,7 @@ services:
       - database_data:/var/lib/mysql
     networks:
       - app-network
+    restart: always
 
   backend:
     image: eclipse-temurin:21-jdk
@@ -40,6 +41,7 @@ services:
       - database
     networks:
       - app-network
+    restart: always
 
   frontend:
     image: nginx:alpine
@@ -63,6 +65,7 @@ services:
       - backend
     networks:
       - app-network
+    restart: always
 
 networks:
   app-network:
